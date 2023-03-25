@@ -12,6 +12,8 @@ builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
+builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,8 +1,10 @@
-﻿namespace Bloggie.Web.Models.Domain
+﻿using Bloggie.Web.Models.Domain;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Bloggie.Web.Models.ViewModels
 {
-    public class BlogPost
+    public class AddBlogPostRequest
     {
-        public Guid Id { get; set; }
         public string Heading { get; set; }
         public string PageTitle { get; set; }
         public string Content { get; set; }
@@ -10,10 +12,14 @@
         public string FeaturedImageUrl { get; set; }
         public string Urlhandle { get; set; }
         public DateTime PublishedDate { get; set; }
+        public String MinDate { get; set; }
         public string Author { get; set; }
         public bool Visible { get; set; }
 
-        // Navigation Property
-        public ICollection<Tag> Tags { get; set; }
+        //display tags
+        public IEnumerable<SelectListItem> Tags { get; set; }
+
+        //Collect Tag
+        public string[] SelectedTags { get; set; } = Array.Empty<string>();
     }
 }
