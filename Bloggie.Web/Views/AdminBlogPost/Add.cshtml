@@ -27,8 +27,14 @@
             <input type="text" class="form-control" id="shortDescription" asp-for="ShortDescription" />
         </div>
         <div class="mb-3">
+            <label class="form-label">Feature Image Upload</label>
+            <input type="file" class="form-control" id="featureImageUpload" />
+
+            <img src="" id="featureImgeDisplay" style="display: none; width: 300px; margin-top: 10px" />
+        </div>
+        <div class="mb-3">
             <label class="form-label">Feature Image URL</label>
-            <input type="text" class="form-control" id="featureImageUrl" asp-for="FeaturedImageUrl" />
+            <input type="text" class="form-control" id="featureImageUrl" asp-for="FeaturedImageUrl" readonly />
         </div>
         <div class="mb-3">
             <label class="form-label">URL Handle</label>
@@ -57,3 +63,49 @@
         </div>
     </form>
 </div>
+
+
+@section Scripts {
+    <script>
+        var editor = new FroalaEditor('#content', {
+            imageUploadURL: '/api/images'
+        });
+
+        const featureUploadElement = document.getElementById("featureImageUpload");
+        const featureImageUrlElement = document.getElementById("featureImageUrl");
+        const featureImageDisplayElement = document.getElementById("featureImgeDisplay");
+
+        const uploadFeatureImage = async (e) => {
+            let file = e.target.files[0];
+
+            let data = new FormData();
+            data.append("file", file);
+
+            await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*'
+                },
+                body: data
+            }).then(res => res.json())
+                .then(result => {
+                    if (result?.link) {
+                        console.log('uploaded link is: ', result.link);
+                        featureImageUrlElement.value = result.link;
+                        featureImgeDisplay.src = result.link;
+                        featureImgeDisplay.style.display = 'block';
+                    } else {
+                        console.error('error while uploading image to cloudinary with no link');
+                    }
+                }).catch(err => console.error('error while uploading image to cloudinary is : ', err));
+        }
+
+        featureUploadElement.addEventListener('change', uploadFeatureImage);
+    </script>
+}
+
+<style>
+    #fr-logo {
+        display: none;
+    }
+</style>
