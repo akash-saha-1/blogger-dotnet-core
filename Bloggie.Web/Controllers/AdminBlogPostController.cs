@@ -1,11 +1,13 @@
 ﻿using Bloggie.Web.Models.Domain;
 using Bloggie.Web.Models.ViewModels;
 using Bloggie.Web.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bloggie.Web.Controllers
 {
+    [Authorize(Roles = "Admin")] // Roles values are comma separated values like Roles = "Admin,SuperAdmin"
     public class AdminBlogPostController : Controller
     {
         private readonly ITagRepository tagRepository;

@@ -1,5 +1,6 @@
 using Bloggie.Web.Data;
 using Bloggie.Web.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,22 @@ builder.Services.AddControllersWithViews();
 
 // Add DBContext service to the container
 builder.Services.AddDbContext<BloggieDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
+
+// Add AuthDBContext service to the container
+builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieAuthDbConnectionString")));
+
+// This line is responsible for binding db context with Identity Manager Service
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
+
+builder.Services.Configure<IdentityOptions>(options => {
+    // global password Settings
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+   });
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 
@@ -32,6 +49,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
